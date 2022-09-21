@@ -10,7 +10,8 @@ class DataMap():
    min_value = .05
    
    @staticmethod
-   def diffuse(): 
+   def diffuse():
+      """Diffuses the DataMap. Neighboring squares bleed over into each other""" 
       old = []
       for i in range(len(DataMap.trail_map)):
          list = []
@@ -34,6 +35,7 @@ class DataMap():
    
    @staticmethod
    def decay():
+      """Every value in DataMap decays by a factor (DataMap.decay_factor)"""
       for i in range(len(DataMap.trail_map)):
          for j in range(len(DataMap.trail_map[i])):
             if DataMap.trail_map[i][j] < DataMap.min_value:
@@ -43,14 +45,15 @@ class DataMap():
    
    @staticmethod
    def draw():
-        for i in range(len(DataMap.trail_map)):
-            for j in range(len(DataMap.trail_map[i])):
-                if DataMap.trail_map[i][j] > 0:
-                    value = DataMap.trail_map[i][j]
-                    percent = min(max(value,0),1)
-                    
-                    #color = getColor([(255,255,255), (0,0,255), (120,120,0), (0,255,0)], percent)
-                    #color = getColor([(0,255,0)], percent)
-                    color = (0,255*percent,0)
-                    pygame.draw.rect(screen, color, (int(j*SCALE),int(i*SCALE),SCALE,SCALE), 0)
-                    #pygame.draw.circle(screen, (0,255*min(max(DataMap.trail_map[i][j],0),1),0), (int(j*SCALE+SCALE*.5), int(i*SCALE+SCALE*.5)), SCALE)
+      """Draws the DataMap to the screen. Draws every element in the array as rectangles, so it can be laggy at high resolutions"""
+      for i in range(len(DataMap.trail_map)):
+         for j in range(len(DataMap.trail_map[i])):
+               if DataMap.trail_map[i][j] > 0:
+                  value = DataMap.trail_map[i][j]
+                  percent = min(max(value,0),1)
+                  
+                  #color = getColor([(255,255,255), (0,0,255), (120,120,0), (0,255,0)], percent)
+                  #color = getColor([(0,255,0)], percent)
+                  color = (0,255*percent,0)
+                  pygame.draw.rect(screen, color, (int(j*SCALE),int(i*SCALE),SCALE,SCALE), 0)
+                  #pygame.draw.circle(screen, (0,255*min(max(DataMap.trail_map[i][j],0),1),0), (int(j*SCALE+SCALE*.5), int(i*SCALE+SCALE*.5)), SCALE)
