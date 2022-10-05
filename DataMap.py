@@ -44,7 +44,7 @@ class DataMap():
                DataMap.trail_map[i][j] *= DataMap.decay_factor 
    
    @staticmethod
-   def draw():
+   def draw(drawCode):
       """Draws the DataMap to the screen. Draws every element in the array as rectangles, so it can be laggy at high resolutions"""
       for i in range(len(DataMap.trail_map)):
          for j in range(len(DataMap.trail_map[i])):
@@ -54,6 +54,12 @@ class DataMap():
                   
                   #color = getColor([(255,255,255), (0,0,255), (120,120,0), (0,255,0)], percent)
                   #color = getColor([(0,255,0)], percent)
-                  color = (0,255*percent,0)
+                  color = [drawCode[0]*255,drawCode[1]*255,drawCode[2]*255]
+                  while -255 in color:
+                     color[color.index(-255)] = 255*percent
                   pygame.draw.rect(screen, color, (int(j*SCALE),int(i*SCALE),SCALE,SCALE), 0)
                   #pygame.draw.circle(screen, (0,255*min(max(DataMap.trail_map[i][j],0),1),0), (int(j*SCALE+SCALE*.5), int(i*SCALE+SCALE*.5)), SCALE)
+                  
+   @staticmethod
+   def clear():
+      DataMap.trail_map = [[0 for i in range(SCREEN_WIDTH)] for j in range(SCREEN_HEIGHT)]

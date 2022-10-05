@@ -4,8 +4,8 @@ from pygame.locals import *
 import random
 import time
 
-SCREEN_WIDTH = 90
-SCREEN_HEIGHT = 90
+SCREEN_WIDTH = 256
+SCREEN_HEIGHT = 256
 SCALE = 1
 
 white = (255, 255, 255)
@@ -16,33 +16,35 @@ blue = (0, 0, 255)
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH * SCALE,SCREEN_HEIGHT * SCALE))
 
+colorCodes = [-1,0]
+
+
+
 def main():
     from Slime import Slime
     from DataMap import DataMap
 
     # Slimes are generated based on a percentage of the overall screen area.
-    slimePercent = .07
+    slimePercent = .03
     slimeCount = int(SCREEN_WIDTH*SCREEN_HEIGHT*slimePercent)
 
-    # Generate slimes in a certain pattern
-    for i in range(slimeCount):
-        # Random Pos, Random Angle
-        Slime.add(Slime(x=random.randrange(5,SCREEN_WIDTH-5), y=random.randrange(5,SCREEN_HEIGHT-5), angle=random.randrange(0,360)))
-        ## Center, Random Angle
-        #Slime.add(Slime(x=SCREEN_WIDTH//2, y=SCREEN_HEIGHT//2, angle=random.randrange(0,360)))
-        # Random Pos, = angle
-        #Slime.add(Slime(x=random.randrange(5,SCREEN_WIDTH-5), y=random.randrange(5,SCREEN_HEIGHT-5)))
-        ## Center, = angle
-        #Slime.add(Slime(x=SCREEN_WIDTH//2, y=SCREEN_HEIGHT//2))
-        ## Center, all to corner
-        #Slime.add(Slime(x=SCREEN_WIDTH//2, y=SCREEN_HEIGHT//2, vector = [1,1]))
+    Slime.genSlimes(slimeCount)
     
     # Pause will be toggled when the user presses space. This will stop all movement so the user can see the frame clearly
     pause = False
     # viewDataMap will be toggled by the arrow keys. If true, it will show the trails left behind by the organisms.
     # If false, it will only show the organisms
     viewDataMap = True
-    while (True):
+
+    for i in range(2000):
+        if i % 2000 == 0:
+            drawCode = [random.choice(colorCodes), random.choice(colorCodes), random.choice(colorCodes)]
+            if -1 not in drawCode:
+                drawCode[random.choice([0,1,2])] = -1
+            DataMap.clear()
+            Slime.genSlimes(slimeCount)
+            
+        
         # When true, decay will speed up the decaying process. Decaying will happen slower when decay is false.
         decay = False
         # Loop over pygame events
@@ -77,15 +79,17 @@ def main():
 
         # Draw what should be drawn        
         if viewDataMap:
-            DataMap.draw()
+            DataMap.draw(drawCode)
         else:
             Slime.drawAll()
 
         # Update display
         pygame.display.update()
         
+        #pygame.image.save(screen, "output_frames/frame-" + str(i) + ".jpeg")
+        
         # Wait some time before next frame
-        time.sleep(.001)
+        # time.sleep(.001)
 
 if __name__ == "__main__":
     main()

@@ -23,7 +23,7 @@ class Slime():
     vectorLeft = [math.cos(math.radians(turn_per_step)), math.sin(math.radians(turn_per_step))]
     vectorRight = [math.cos(math.radians(-turn_per_step)), math.sin(math.radians(-turn_per_step))]
     
-    def __init__(self, x=SCREEN_WIDTH/2, y=SCREEN_HEIGHT/2, velocity=[1,0], angle=None, speed=3):
+    def __init__(self, x=SCREEN_WIDTH/2, y=SCREEN_HEIGHT/2, velocity=[1,0], angle=None, speed=5):
         self.x = x
         self.y = y
         
@@ -37,6 +37,22 @@ class Slime():
             vx = math.cos(math.radians(angle)) * self.speed
             vy = math.sin(math.radians(angle)) * self.speed
             self.velocity = [vx, vy]
+    
+    @staticmethod
+    def genSlimes(slimeCount):
+        Slime.slimes = []
+        # Generate slimes in a certain pattern
+        for i in range(slimeCount):
+            # Random Pos, Random Angle
+            Slime.add(Slime(x=random.randrange(5,SCREEN_WIDTH-5), y=random.randrange(5,SCREEN_HEIGHT-5), angle=random.randrange(0,360)))
+            ## Center, Random Angle
+            #Slime.add(Slime(x=SCREEN_WIDTH//2, y=SCREEN_HEIGHT//2, angle=random.randrange(0,360)))
+            # Random Pos, = angle
+            #Slime.add(Slime(x=random.randrange(5,SCREEN_WIDTH-5), y=random.randrange(5,SCREEN_HEIGHT-5)))
+            ## Center, = angle
+            #Slime.add(Slime(x=SCREEN_WIDTH//2, y=SCREEN_HEIGHT//2))
+            ## Center, all to corner
+            #Slime.add(Slime(x=SCREEN_WIDTH//2, y=SCREEN_HEIGHT//2, vector = [1,1]))
     
     @staticmethod
     def add(slimeObject):
@@ -67,16 +83,16 @@ class Slime():
         # Calculate unit vector of slime's velocity multiplied by the sensor distance. This is the relative position of the front facing sensor.
         front_vector = normalizeAndScaleTo(self.velocity, Slime.sensor_distance)
         # Calculate absolute position of the front facing sensor by adding slime's position to the relative position
-        front_sensor = [int(self.x + vector2[0]), int(self.y + vector2[1])]
+        front_sensor = [int(self.x + front_vector[0]), int(self.y + front_vector[1])]
         
         # Calculate relative position of left vector by getting the rotation of the front_vector by the angle of the left sensor vector. 
         left_vector = rotateVec(front_vector, Slime.leftSensorVec)
         # Calculte the absolute position of the left sensor
-        left_sensor = [int(self.x + vector1[0]), int(self.y + vector1[1])]
+        left_sensor = [int(self.x + left_vector[0]), int(self.y + left_vector[1])]
 
         # Repeat operations using the right sensor vector to get the right sensor coordinates
         right_vector = rotateVec(front_vector, Slime.rightSensorVec)
-        right_sensor = [int(self.x + vector3[0]), int(self.y + vector3[1])]
+        right_sensor = [int(self.x + right_vector[0]), int(self.y + right_vector[1])]
 
         return [left_sensor, front_sensor, right_sensor]
     
